@@ -35,7 +35,7 @@ public class Game {
 
     @ManyToOne
     @JsonIgnoreProperties(value ={"users", "games"})
-    @JoinColumn(name="userId", nullable = false)
+    @JoinColumn(name="userId")
     private User user;
 
     public Game(String title, String gameStudio, String ageRating, String genre, int playerNumber){

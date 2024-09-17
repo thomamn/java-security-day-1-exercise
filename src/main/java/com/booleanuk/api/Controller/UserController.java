@@ -18,6 +18,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GameRepository gameRepository;
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user){
 
@@ -45,6 +48,50 @@ public class UserController {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("{id}/gamesb/{gameId}")
+    public ResponseEntity<User> borrowGame(@PathVariable int id,
+                                           @PathVariable int gameId){
+        User userBorrow=this.userRepository.findById(id).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No user with that ID found")
+        );
+
+        Game gameToBorrow=this.gameRepository.findById(gameId).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No game with that ID found")
+        );
+
+        userBorrow.borrowGame(gameToBorrow);
+
+        return new ResponseEntity<User>(this.userRepository.save(userBorrow
+        ), HttpStatus.CREATED);
+
+
+
+    }
+
+    @PutMapping("{id}/gamesr/{gameId}")
+    public ResponseEntity<User> returnGame(@PathVariable int id,
+                                           @PathVariable int gameId){
+        User userBorrow=this.userRepository.findById(id).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No user with that ID found")
+        );
+
+        Game gameToReturn=this.gameRepository.findById(gameId).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No game with that ID found")
+        );
+
+        userBorrow.returnGame(gameToReturn);
+
+        return new ResponseEntity<User>(this.userRepository.save(userBorrow
+        ), HttpStatus.CREATED);
+
+
+
     }
 
     @PutMapping("{id}")

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -32,4 +34,22 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnoreProperties(value ={"users", "games"})
     private List<Game> games;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties(value ={"users", "games"})
+    private Set<Game> prevGames;
+
+    public void borrowGame(Game game){
+        if (!games.contains(game)){
+            games.add(game);
+        }
+        prevGames.add(game);
+    }
+
+    public void returnGame(Game game){
+        if (!games.contains(game)){
+            games.remove(game);
+        }
+    }
+
 }
